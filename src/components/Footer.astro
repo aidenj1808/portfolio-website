@@ -1,0 +1,19 @@
+---
+interface Props {
+  siteName: string;
+}
+
+const { siteName } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-slate-200">
+  <div class="mx-auto flex max-w-4xl justify-between px-4 py-6 text-sm text-slate-500">
+    <p>
+      &copy; {year} {siteName}
+    </p>
+    <a href="https://github.com/aidenj1808" class="hover:text-slate-900">
+      GitHub
+    </a>
+  </div>
+</footer>
