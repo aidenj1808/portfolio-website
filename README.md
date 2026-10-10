@@ -59,12 +59,9 @@ Put cover images in `src/assets/projects/`. Astro optimizes them at build time. 
 
 ## Deployment
 
-The site deploys to Cloudflare Workers as static assets (configured in `wrangler.jsonc`). Merging to
-`main` deploys to production. Other branches get preview URLs.
+The site deploys to Cloudflare Workers as static assets (configured in `wrangler.jsonc`) and is
+served at <https://aidenlumley.dev>. Merging to `main` deploys to production. Every other branch
+gets a preview at `https://<branch>-portfolio-website.<subdomain>.workers.dev`, and Cloudflare
+comments the URL on the branch's pull request.
 
-One-time setup in the Cloudflare dashboard:
-
-1. Go to **Workers & Pages → Create → Import a repository** and select this repo.
-2. Set the build command to `npm run build` and the deploy command to `npx wrangler deploy`.
-3. Set the production branch to `main` and enable builds for non-production branches so pull
-   requests get preview URLs.
+Top-level settings in `wrangler.jsonc` apply only to production. Previews use the `previews` block.
