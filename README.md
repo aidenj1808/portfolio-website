@@ -59,12 +59,22 @@ Put cover images in `src/assets/projects/`. Astro optimizes them at build time. 
 
 ## Deployment
 
-The site deploys to Cloudflare Workers as static assets (configured in `wrangler.jsonc`). Merging to
-`main` deploys to production. Other branches get preview URLs.
+The site deploys to Cloudflare Workers as static assets (configured in `wrangler.jsonc`) and is
+served at <https://aidenlumley.dev>. Merging to `main` deploys to production. Every other branch
+gets a preview at `https://<branch>-portfolio-website.<subdomain>.workers.dev`, and Cloudflare
+comments the URL on the branch's pull request.
+
+Top-level settings in `wrangler.jsonc` apply only to production. Previews use the `previews` block.
 
 One-time setup in the Cloudflare dashboard:
 
-1. Go to **Workers & Pages → Create → Import a repository** and select this repo.
-2. Set the build command to `npm run build` and the deploy command to `npx wrangler deploy`.
-3. Set the production branch to `main` and enable builds for non-production branches so pull
-   requests get preview URLs.
+1. Buy `aidenlumley.dev` through Cloudflare Registrar so the domain is in the same account. The
+   production deploy fails on the custom domain route in `wrangler.jsonc` without it.
+2. Go to **Workers & Pages → Create → Import a repository** and select this repo. The Worker name
+   must match `name` in `wrangler.jsonc`.
+3. Set the build command to `npm run build` and the deploy command to `npx wrangler deploy`.
+4. Under **Settings → Build → Branch control**, check that the production branch is `main` (the
+   repo's default branch), then turn on **Enable Preview Builds** with the preview command
+   `npx wrangler preview`.
+5. In the `aidenlumley.dev` DNS settings, add a proxied `AAAA` record for `www` pointing to `100::`,
+   then add a redirect rule from `www.aidenlumley.dev` to `https://aidenlumley.dev`.
