@@ -15,8 +15,15 @@ const currentPath = Astro.url.pathname;
 
 <header class="border-b border-border">
   <nav class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-    <a href="/" class="font-semibold hover:text-accent">
-      {siteName}
+    <a href="/" class="flex items-center gap-2.5 font-semibold hover:text-accent">
+      <img
+        src="/favicon.svg"
+        alt=""
+        width="28"
+        height="28"
+        class="size-7 rounded-md dark:ring-1 dark:ring-border"
+      />
+      <span class="max-sm:sr-only">{siteName}</span>
     </a>
     <div class="flex items-center gap-6">
       <ul class="flex gap-6 text-sm">

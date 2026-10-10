@@ -19,8 +19,10 @@ const siteName = 'Aiden Lumley';
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <title>{title === siteName ? title : `${title} | ${siteName}`}</title>
     <!-- Runs before first paint so the page never flashes the wrong theme. -->
     <script is:inline>
