@@ -1,0 +1,109 @@
+---
+import Monitor from '@lucide/astro/icons/monitor';
+import Moon from '@lucide/astro/icons/moon';
+import Sun from '@lucide/astro/icons/sun';
+
+const options = [
+  { value: 'system', label: 'System theme', Icon: Monitor },
+  { value: 'light', label: 'Light theme', Icon: Sun },
+  { value: 'dark', label: 'Dark theme', Icon: Moon },
+];
+---
+
+<div role="group" aria-label="Colour theme" class="flex rounded-md border border-border p-0.5">
+  {options.map(({ value, label, Icon }) => (
+    <button
+      type="button"
+      data-theme-option={value}
+      aria-label={label}
+      aria-pressed="false"
+      class="rounded-sm p-1.5 text-muted hover:text-fg aria-pressed:bg-surface aria-pressed:text-fg"
+    >
+      <Icon size={16} />
+    </button>
+  ))}
+</div>
+
+<script>
+  type ThemePreference = 'light' | 'dark' | 'system';
+
+  const storageKey = 'theme';
+  const darkSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const optionButtons = document.querySelectorAll<HTMLButtonElement>('[data-theme-option]');
+
+  /**
+   * Checks whether a value is a known theme preference.
+   *
+   * @param value - The value to check, e.g. a button's data attribute.
+   * @returns True if the value is 'light', 'dark', or 'system'.
+   */
+  function isThemePreference(value: unknown): value is ThemePreference {
+    return value === 'light' || value === 'dark' || value === 'system';
+  }
+
+  /**
+   * Reads the visitor's saved theme choice.
+   *
+   * @returns The saved preference, or 'system' when nothing valid is saved.
+   */
+  function readPreference(): ThemePreference {
+    const saved = localStorage.getItem(storageKey);
+    return isThemePreference(saved) ? saved : 'system';
+  }
+
+  /**
+   * Saves the visitor's theme choice; 'system' clears it so the OS setting applies.
+   *
+   * @param preference - The theme the visitor picked.
+   */
+  function savePreference(preference: ThemePreference): void {
+    if (preference === 'system') {
+      localStorage.removeItem(storageKey);
+    } else {
+      localStorage.setItem(storageKey, preference);
+    }
+  }
+
+  /**
+   * Applies a theme preference to the page, the browser chrome colour, and the toggle buttons.
+   *
+   * @param preference - The theme to show; 'system' follows the OS colour scheme.
+   */
+  function applyPreference(preference: ThemePreference): void {
+    const isDark = preference === 'dark' || (preference === 'system' && darkSchemeQuery.matches);
+    document.documentElement.classList.toggle('dark', isDark);
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', getComputedStyle(document.body).backgroundColor);
+    optionButtons.forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.themeOption === preference));
+    });
+  }
+
+  /**
+   * Saves and applies a newly picked theme, cross-fading unless the visitor prefers reduced motion.
+   *
+   * @param preference - The theme the visitor picked.
+   */
+  function choosePreference(preference: ThemePreference): void {
+    savePreference(preference);
+    if (reducedMotionQuery.matches || !('startViewTransition' in document)) {
+      applyPreference(preference);
+      return;
+    }
+    document.startViewTransition(() => applyPreference(preference));
+  }
+
+  optionButtons.forEach((button) => {
+    const preference = button.dataset.themeOption;
+    if (!isThemePreference(preference)) return;
+    button.addEventListener('click', () => choosePreference(preference));
+  });
+
+  darkSchemeQuery.addEventListener('change', () => {
+    if (readPreference() === 'system') applyPreference('system');
+  });
+
+  applyPreference(readPreference());
+</script>

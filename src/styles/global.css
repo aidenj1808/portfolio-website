@@ -1,5 +1,38 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-bg: var(--theme-bg);
+  --color-surface: var(--theme-surface);
+  --color-fg: var(--theme-fg);
+  --color-muted: var(--theme-muted);
+  --color-border: var(--theme-border);
+  --color-accent: var(--theme-accent);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --theme-bg: var(--color-white);
+    --theme-surface: var(--color-slate-100);
+    --theme-fg: var(--color-slate-900);
+    --theme-muted: var(--color-slate-600);
+    --theme-border: var(--color-slate-200);
+    --theme-accent: var(--color-teal-700);
+  }
+
+  :root.dark {
+    color-scheme: dark;
+    --theme-bg: var(--color-slate-950);
+    --theme-surface: var(--color-slate-800);
+    --theme-fg: var(--color-slate-100);
+    --theme-muted: var(--color-slate-400);
+    --theme-border: var(--color-slate-800);
+    --theme-accent: var(--color-teal-400);
+  }
+}
+
 @layer components {
   .project-content h2 {
     @apply mt-8 mb-3 text-2xl font-semibold;
@@ -24,10 +57,10 @@
   }
 
   .project-content a {
-    @apply underline underline-offset-4;
+    @apply underline underline-offset-4 hover:text-accent;
   }
 
   .project-content code {
-    @apply rounded bg-slate-100 px-1 py-0.5 text-sm;
+    @apply rounded bg-surface px-1 py-0.5 text-sm;
   }
 }
