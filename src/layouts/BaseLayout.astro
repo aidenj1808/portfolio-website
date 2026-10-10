@@ -18,11 +18,23 @@ const siteName = 'Aiden Lumley';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <title>{title === siteName ? title : `${title} | ${siteName}`}</title>
+    <!-- Runs before first paint so the page never flashes the wrong theme. -->
+    <script is:inline>
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle(
+        'dark',
+        savedTheme === 'dark' || (savedTheme !== 'light' && prefersDark),
+      );
+    </script>
   </head>
-  <body class="flex min-h-screen flex-col bg-white text-slate-900">
+  <body class="flex min-h-screen flex-col bg-bg text-fg">
     <Header siteName={siteName} />
     <main class="mx-auto w-full max-w-4xl flex-1 px-4 py-12">
       <slot />
