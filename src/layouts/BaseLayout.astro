@@ -1,0 +1,32 @@
+---
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Software development and data science projects.' } = Astro.props;
+const siteName = 'Aiden Lumley';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{title === siteName ? title : `${title} | ${siteName}`}</title>
+  </head>
+  <body class="flex min-h-screen flex-col bg-white text-slate-900">
+    <Header siteName={siteName} />
+    <main class="mx-auto w-full max-w-4xl flex-1 px-4 py-12">
+      <slot />
+    </main>
+    <Footer siteName={siteName} />
+  </body>
+</html>

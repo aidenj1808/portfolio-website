@@ -1,0 +1,36 @@
+---
+interface Props {
+  siteName: string;
+}
+
+const { siteName } = Astro.props;
+const links = [
+  { href: '/projects/', label: 'Projects' },
+  { href: '/about/', label: 'About' },
+];
+const currentPath = Astro.url.pathname;
+---
+
+<header class="border-b border-slate-200">
+  <nav class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+    <a href="/" class="font-semibold">
+      {siteName}
+    </a>
+    <ul class="flex gap-6 text-sm">
+      {links.map(({ href, label }) => (
+        <li>
+          <a
+            href={href}
+            class:list={[
+              'hover:text-slate-600',
+              currentPath.startsWith(href) && 'font-medium underline underline-offset-4',
+            ]}
+            aria-current={currentPath.startsWith(href) ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>

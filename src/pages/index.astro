@@ -1,0 +1,30 @@
+---
+import ProjectCard from '../components/ProjectCard.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedProjects } from '../lib/projects';
+
+const recentProjects = (await getPublishedProjects()).slice(0, 2);
+---
+
+<BaseLayout title="Aiden Lumley">
+  <section>
+    <h1 class="text-4xl font-bold">Hi, I'm Aiden.</h1>
+    <p class="mt-4 max-w-2xl text-lg text-slate-600">
+      I build software and work with data. This is where I share my projects.
+    </p>
+  </section>
+
+  <section class="mt-16">
+    <div class="flex items-baseline justify-between">
+      <h2 class="text-2xl font-semibold">Recent projects</h2>
+      <a href="/projects/" class="text-sm hover:text-slate-600">
+        View all &rarr;
+      </a>
+    </div>
+    <div class="mt-6 grid gap-6 sm:grid-cols-2">
+      {recentProjects.map((project) => (
+        <ProjectCard project={project} />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

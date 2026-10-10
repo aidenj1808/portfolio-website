@@ -1,0 +1,21 @@
+---
+import ProjectCard from '../../components/ProjectCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedProjects } from '../../lib/projects';
+
+const projects = await getPublishedProjects();
+---
+
+<BaseLayout title="Projects">
+  <h1 class="text-3xl font-bold">Projects</h1>
+  <p class="mt-2 text-slate-600">Software development and data science work.</p>
+  {projects.length > 0 ? (
+    <div class="mt-8 grid gap-6 sm:grid-cols-2">
+      {projects.map((project) => (
+        <ProjectCard project={project} />
+      ))}
+    </div>
+  ) : (
+    <p class="mt-8 text-slate-500">Projects coming soon.</p>
+  )}
+</BaseLayout>

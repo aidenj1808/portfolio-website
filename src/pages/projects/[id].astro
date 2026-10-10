@@ -1,0 +1,55 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDateRange, getPublishedProjects, type Project } from '../../lib/projects';
+
+/**
+ * Generates one detail page per published project.
+ *
+ * @returns Route params keyed by project id, with the entry passed as a prop.
+ */
+export async function getStaticPaths() {
+  const projects = await getPublishedProjects();
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { title, summary, tech, startDate, endDate, repo, demoUrl, cover, coverAlt } = project.data;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={title} description={summary}>
+  <article>
+    <a href="/projects/" class="text-sm text-slate-500 hover:text-slate-900">
+      &larr; All projects
+    </a>
+    <h1 class="mt-4 text-3xl font-bold">{title}</h1>
+    <p class="mt-2 text-slate-500">{formatDateRange(startDate, endDate)}</p>
+    <ul class="mt-4 flex flex-wrap gap-2">
+      {tech.map((name) => (
+        <li class="rounded bg-slate-100 px-2 py-0.5 text-sm">{name}</li>
+      ))}
+    </ul>
+    <div class="mt-4 flex gap-4 text-sm">
+      {repo && (
+        <a href={repo} class="underline underline-offset-4">
+          Source code
+        </a>
+      )}
+      {demoUrl && (
+        <a href={demoUrl} class="underline underline-offset-4">
+          Live demo
+        </a>
+      )}
+    </div>
+    <Image src={cover} alt={coverAlt} width={1200} class="mt-8 w-full rounded-lg" />
+    <div class="project-content mt-8">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
