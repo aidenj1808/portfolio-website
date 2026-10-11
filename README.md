@@ -54,7 +54,8 @@ draft: false # true hides it from the site
 Write-up goes here. MDX lets you import and use components inline.
 ```
 
-Put cover images in `src/assets/projects/`. Astro optimizes them at build time. The schema lives in
+Put cover images in `src/assets/projects/`. Astro optimizes them at build time. The cover is also
+the project page's link preview image, cropped from the center to 1200×627. The schema lives in
 `src/content.config.ts`, and the build fails if a project's frontmatter doesn't match it.
 
 ## Deployment
