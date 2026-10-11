@@ -9,6 +9,9 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://aidenlumley.dev',
 
+  // Covers are our own files, so rasterizing SVGs into PNG link previews is safe.
+  image: { dangerouslyProcessSVG: true },
+
   integrations: [mdx(), vue()],
 
   vite: {

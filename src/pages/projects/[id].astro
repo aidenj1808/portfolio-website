@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCoverPreviewImage } from '../../lib/preview-image';
 import { formatDateRange, getPublishedProjects, type Project } from '../../lib/projects';
 
 /**
@@ -21,9 +22,10 @@ interface Props {
 const { project } = Astro.props;
 const { title, summary, tech, startDate, endDate, repo, demoUrl, cover, coverAlt } = project.data;
 const { Content } = await render(project);
+const previewImage = await getCoverPreviewImage(cover, coverAlt);
 ---
 
-<BaseLayout title={title} description={summary}>
+<BaseLayout title={title} description={summary} image={previewImage}>
   <article>
     <a href="/projects/" class="text-sm text-muted hover:text-fg">
       &larr; All projects
