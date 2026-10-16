@@ -2,8 +2,9 @@
 import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDateRange } from '../../lib/dates';
 import { getCoverPreviewImage } from '../../lib/preview-image';
-import { formatDateRange, getPublishedProjects, type Project } from '../../lib/projects';
+import { getPublishedProjects, type Project } from '../../lib/projects';
 
 /**
  * Generates one detail page per published project.
