@@ -1,8 +1,81 @@
 ---
+import AboutSection from '../components/AboutSection.astro';
+import EducationEntry from '../components/EducationEntry.astro';
+import ExperienceEntry from '../components/ExperienceEntry.astro';
+import HobbyCard from '../components/HobbyCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEducation } from '../lib/education';
+import { getExperience } from '../lib/experience';
+import { getHobbies } from '../lib/hobbies';
+
+const experience = await getExperience();
+const education = await getEducation();
+const hobbies = await getHobbies();
+const sectionLinks = [
+  { id: 'experience', label: 'Experience', hasEntries: experience.length > 0 },
+  { id: 'education', label: 'Education', hasEntries: education.length > 0 },
+  { id: 'hobbies', label: 'Hobbies', hasEntries: hobbies.length > 0 },
+].filter(({ hasEntries }) => hasEntries);
 ---
 
 <BaseLayout title="About">
   <h1 class="text-3xl font-bold">About</h1>
-  <p class="mt-4 text-muted">A short bio, background, and contact details will go here.</p>
+  <div class="mt-4 max-w-2xl space-y-4 text-lg leading-8 text-muted">
+    <p>
+      I graduated from MacEwan University in 2025 with a Bachelor of Science in Computer Science,
+      and I'm now a junior software developer at CE Solutions.
+    </p>
+    <p>
+      I'm interested in both software development and data, and my degree covered both, from
+      object-oriented programming, web development and software engineering to databases, data
+      mining, machine learning and data visualization.
+    </p>
+  </div>
+  {sectionLinks.length > 0 && (
+    <nav aria-label="On this page" class="mt-8">
+      <ul class="flex flex-wrap gap-2 text-sm">
+        {sectionLinks.map(({ id, label }) => (
+          <li>
+            {/* Hover swaps 1px of padding for border so the pill keeps its size. */}
+            <a
+              href={`#${id}`}
+              class="inline-block rounded-full border border-border px-3 py-1 hover:border-2 hover:border-accent hover:px-[11px] hover:py-[3px] hover:text-accent"
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )}
+
+  {experience.length > 0 && (
+    <AboutSection id="experience" title="Experience">
+      <ol class="mt-6 border-l border-border">
+        {experience.map((entry) => (
+          <ExperienceEntry entry={entry} />
+        ))}
+      </ol>
+    </AboutSection>
+  )}
+
+  {education.length > 0 && (
+    <AboutSection id="education" title="Education">
+      <ol class="mt-6 border-l border-border">
+        {education.map((entry) => (
+          <EducationEntry entry={entry} />
+        ))}
+      </ol>
+    </AboutSection>
+  )}
+
+  {hobbies.length > 0 && (
+    <AboutSection id="hobbies" title="Hobbies">
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+        {hobbies.map((hobby) => (
+          <HobbyCard hobby={hobby} />
+        ))}
+      </div>
+    </AboutSection>
+  )}
 </BaseLayout>

@@ -63,4 +63,20 @@
   .project-content code {
     @apply rounded bg-surface px-1 py-0.5 text-sm;
   }
+
+  .entry-content {
+    @apply leading-7;
+  }
+
+  .entry-content > * + * {
+    @apply mt-2;
+  }
+
+  .entry-content ul {
+    @apply list-disc space-y-1 pl-5;
+  }
+
+  .entry-content a {
+    @apply underline underline-offset-4 hover:text-accent;
+  }
 }

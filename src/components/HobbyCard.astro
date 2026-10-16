@@ -1,0 +1,27 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import type { Hobby } from '../lib/hobbies';
+
+interface Props {
+  hobby: Hobby;
+}
+
+const { hobby } = Astro.props;
+const { name, photo } = hobby.data;
+const { Content } = await render(hobby);
+---
+
+<article class="overflow-hidden rounded-lg border border-border">
+  {photo && (
+    <Image src={photo.src} alt={photo.alt} width={600} class="aspect-video w-full object-cover" />
+  )}
+  <div class="p-4">
+    <h3 class="font-semibold">{name}</h3>
+    {hobby.body?.trim() && (
+      <div class="entry-content mt-1 text-sm leading-6 text-muted">
+        <Content />
+      </div>
+    )}
+  </div>
+</article>

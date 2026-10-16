@@ -1,0 +1,47 @@
+---
+import { render } from 'astro:content';
+import { formatEducationDates, type Education } from '../lib/education';
+import TechTags from './TechTags.astro';
+import TimelineEntry from './TimelineEntry.astro';
+
+interface Props {
+  entry: Education;
+}
+
+const { entry } = Astro.props;
+const { credential, institution, url, location, highlights, tech, coursework } = entry.data;
+const { Content } = await render(entry);
+---
+
+<TimelineEntry title={credential} dates={formatEducationDates(entry.data)}>
+  <p class="mt-1 text-muted">
+    {url ? (
+      <a href={url} class="underline underline-offset-4 hover:text-accent">
+        {institution}
+      </a>
+    ) : (
+      institution
+    )}
+    {location && ` · ${location}`}
+  </p>
+  {highlights.length > 0 && <p class="mt-1 text-sm">{highlights.join(' · ')}</p>}
+  <TechTags tech={tech} />
+  {entry.body?.trim() && (
+    <div class="entry-content mt-3">
+      <Content />
+    </div>
+  )}
+  {coursework.map(({ subject, courses }) => (
+    <div class="mt-5">
+      <h4 class="text-sm font-semibold">{subject} courses</h4>
+      <ul class="mt-2 text-sm sm:columns-2 sm:gap-x-8">
+        {courses.map(({ code, title }) => (
+          <li class="flex break-inside-avoid gap-3 py-0.5">
+            {code && <span class="min-w-[8ch] shrink-0 font-mono text-muted">{code}</span>}
+            <span>{title}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</TimelineEntry>

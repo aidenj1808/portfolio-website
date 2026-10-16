@@ -1,0 +1,48 @@
+---
+interface Badge {
+  name: string;
+  platform?: string;
+}
+
+interface Props {
+  tech: { languages: string[]; databases: Badge[]; tools: string[] };
+}
+
+const { tech } = Astro.props;
+const allGroups: { label: string; badges: Badge[] }[] = [
+  { label: 'Languages', badges: tech.languages.map((name) => ({ name })) },
+  { label: 'Databases', badges: tech.databases },
+  { label: 'Tools', badges: tech.tools.map((name) => ({ name })) },
+];
+const groups = allGroups
+  .filter(({ badges }) => badges.length > 0)
+  .map(({ label, badges }) => ({
+    label,
+    badges: [...badges].sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })),
+  }));
+---
+
+{groups.length > 0 && (
+  <dl class="mt-3 grid grid-cols-[5rem_1fr] items-baseline gap-x-3 gap-y-2 text-xs">
+    {groups.map(({ label, badges }) => (
+      <>
+        <dt class="text-muted">{label}</dt>
+        <dd>
+          <ul class="flex flex-wrap gap-2">
+            {badges.map(({ name, platform }) => (
+              <li class="flex overflow-hidden rounded">
+                <span class="bg-surface px-2 py-0.5">{name}</span>
+                {platform && (
+                  <>
+                    <span class="sr-only"> on </span>
+                    <span class="ml-px bg-surface px-2 py-0.5 text-muted">{platform}</span>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </dd>
+      </>
+    ))}
+  </dl>
+)}
