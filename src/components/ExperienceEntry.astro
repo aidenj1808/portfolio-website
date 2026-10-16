@@ -1,0 +1,37 @@
+---
+import { render } from 'astro:content';
+import { formatDateRange } from '../lib/dates';
+import { employmentTypeLabels, type Experience } from '../lib/experience';
+import TechTags from './TechTags.astro';
+import TimelineEntry from './TimelineEntry.astro';
+
+interface Props {
+  entry: Experience;
+}
+
+const { entry } = Astro.props;
+const { role, organization, url, location, type, startDate, endDate, tech } = entry.data;
+const { Content } = await render(entry);
+const details = [location, type ? employmentTypeLabels[type] : undefined].filter(
+  (detail) => detail !== undefined,
+);
+---
+
+<TimelineEntry title={role} dates={formatDateRange(startDate, endDate)}>
+  <p class="mt-1 text-muted">
+    {url ? (
+      <a href={url} class="underline underline-offset-4 hover:text-accent">
+        {organization}
+      </a>
+    ) : (
+      organization
+    )}
+    {details.length > 0 && ` · ${details.join(' · ')}`}
+  </p>
+  <TechTags tech={tech} />
+  {entry.body?.trim() && (
+    <div class="entry-content mt-3">
+      <Content />
+    </div>
+  )}
+</TimelineEntry>

@@ -1,17 +1,61 @@
 ---
+import Briefcase from '@lucide/astro/icons/briefcase';
+import GraduationCap from '@lucide/astro/icons/graduation-cap';
 import ProjectCard from '../components/ProjectCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDateRange } from '../lib/dates';
+import { formatEducationDates, getEducation } from '../lib/education';
+import { getExperience } from '../lib/experience';
 import { getPublishedProjects } from '../lib/projects';
 
 const recentProjects = (await getPublishedProjects()).slice(0, 2);
+const latestRole = (await getExperience()).at(0);
+const mainEducation = (await getEducation()).at(0);
+const background = [
+  latestRole && {
+    Icon: Briefcase,
+    href: '/about/#experience',
+    title: latestRole.data.role,
+    place: latestRole.data.organization,
+    dates: formatDateRange(latestRole.data.startDate, latestRole.data.endDate),
+  },
+  mainEducation && {
+    Icon: GraduationCap,
+    href: '/about/#education',
+    title: mainEducation.data.credential,
+    place: mainEducation.data.institution,
+    dates: formatEducationDates(mainEducation.data),
+  },
+].filter((item) => item !== undefined);
 ---
 
 <BaseLayout title="Aiden Lumley">
   <section>
     <h1 class="text-4xl font-bold">Hi, I'm Aiden.</h1>
     <p class="mt-4 max-w-2xl text-lg text-muted">
-      I build software and work with data. This is where I share my projects.
+      I build software, and I move, model and explain data.
     </p>
+    {background.length > 0 && (
+      <ul class="mt-8 max-w-2xl space-y-3">
+        {background.map(({ Icon, href, title, place, dates }) => (
+          <li>
+            <a href={href} class="group flex gap-3">
+              <Icon size={20} aria-hidden="true" class="mt-0.5 shrink-0 text-accent" />
+              <span class="flex flex-1 flex-wrap items-baseline justify-between gap-x-4">
+                <span>
+                  <span class="font-medium group-hover:text-accent">{title}</span>
+                  <span class="text-muted"> · {place}</span>
+                </span>
+                <span class="text-sm text-muted">{dates}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+    <a href="/about/" class="mt-6 inline-block text-sm hover:text-accent">
+      More about me &rarr;
+    </a>
   </section>
 
   <section class="mt-16">

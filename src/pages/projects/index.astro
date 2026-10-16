@@ -8,7 +8,7 @@ const projects = await getPublishedProjects();
 
 <BaseLayout title="Projects">
   <h1 class="text-3xl font-bold">Projects</h1>
-  <p class="mt-2 text-muted">Software development and data science work.</p>
+  <p class="mt-2 text-muted">Software and data projects.</p>
   {projects.length > 0 ? (
     <div class="mt-8 grid gap-6 sm:grid-cols-2">
       {projects.map((project) => (

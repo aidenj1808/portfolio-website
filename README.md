@@ -1,6 +1,7 @@
 # portfolio-website
 
-My personal portfolio of software development and data science projects.
+Source for [aidenlumley.dev](https://aidenlumley.dev), my personal site: work experience, education
+and projects in software development and data, plus my hobbies.
 
 Built with [Astro](https://astro.build), TypeScript, Tailwind CSS, MDX, and Vue (for interactive
 islands). Hosted on Cloudflare.
@@ -29,34 +30,6 @@ The dev server runs at <http://localhost:4321>.
 | `npm run format:check` | Check formatting without writing (used in CI) |
 
 CI runs lint, format check, type-check, and build on every pull request.
-
-## Adding a project
-
-Create an `.mdx` (or `.md`) file in `src/content/projects/`. The file name becomes the URL:
-`my-project.mdx` → `/projects/my-project/`.
-
-```mdx
----
-title: My Project
-summary: One sentence shown on the project card.
-category: data-science # or: software
-tech: [Python, pandas, Streamlit]
-startDate: 2025-01-10
-endDate: 2025-04-20 # omit if ongoing
-repo: https://github.com/aidenj1808/my-project # optional
-demoUrl: https://example.com # optional
-demoType: embed # optional: embed | link | video
-cover: ../../assets/projects/my-project.png
-coverAlt: Screenshot of the dashboard
-draft: false # true hides it from the site
----
-
-Write-up goes here. MDX lets you import and use components inline.
-```
-
-Put cover images in `src/assets/projects/`. Astro optimizes them at build time. The cover is also
-the project page's link preview image, cropped from the center to 1200×627. The schema lives in
-`src/content.config.ts`, and the build fails if a project's frontmatter doesn't match it.
 
 ## Deployment
 
