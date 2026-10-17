@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content';
 import { formatEducationDates, type Education } from '../lib/education';
+import NewTabLink from './NewTabLink.astro';
 import TechTags from './TechTags.astro';
 import TimelineEntry from './TimelineEntry.astro';
 
@@ -16,9 +17,9 @@ const { Content } = await render(entry);
 <TimelineEntry title={credential} dates={formatEducationDates(entry.data)}>
   <p class="mt-1 text-muted">
     {url ? (
-      <a href={url} class="underline underline-offset-4 hover:text-accent">
+      <NewTabLink href={url} class="underline underline-offset-4 hover:text-accent">
         {institution}
-      </a>
+      </NewTabLink>
     ) : (
       institution
     )}

@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { render } from 'astro:content';
+import NewTabLink from '../../components/NewTabLink.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatDateRange } from '../../lib/dates';
 import { getCoverPreviewImage } from '../../lib/preview-image';
@@ -40,14 +41,14 @@ const previewImage = await getCoverPreviewImage(cover, coverAlt);
     </ul>
     <div class="mt-4 flex gap-4 text-sm">
       {repo && (
-        <a href={repo} class="underline underline-offset-4 hover:text-accent">
+        <NewTabLink href={repo} class="underline underline-offset-4 hover:text-accent">
           Source code
-        </a>
+        </NewTabLink>
       )}
       {demoUrl && (
-        <a href={demoUrl} class="underline underline-offset-4 hover:text-accent">
+        <NewTabLink href={demoUrl} class="underline underline-offset-4 hover:text-accent">
           Live demo
-        </a>
+        </NewTabLink>
       )}
     </div>
     <Image src={cover} alt={coverAlt} width={1200} class="mt-8 w-full rounded-lg" />

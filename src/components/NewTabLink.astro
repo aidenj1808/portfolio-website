@@ -1,0 +1,30 @@
+---
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import type { HTMLAttributes } from 'astro/types';
+import {
+  newTabIconClass,
+  newTabIconSpacerClass,
+  newTabLabel,
+  newTabRel,
+} from '../lib/new-tab-links';
+
+type Props = Omit<HTMLAttributes<'a'>, 'target' | 'rel'> & {
+  href: string;
+  /** Set to false when the link already shows its own icon, such as a brand mark. */
+  showIcon?: boolean;
+};
+
+const { showIcon = true, ...attributes } = Astro.props;
+// Astro keeps the line breaks around slotted text, which would underline a space before the icon.
+const content = (await Astro.slots.render('default')).trim();
+---
+
+<a {...attributes} target="_blank" rel={newTabRel}>
+  <Fragment set:html={content} />
+  {showIcon && (
+    <span class={newTabIconSpacerClass}>
+      <ArrowUpRight class={newTabIconClass} />
+    </span>
+  )}
+  <span class="sr-only">{newTabLabel}</span>
+</a>
