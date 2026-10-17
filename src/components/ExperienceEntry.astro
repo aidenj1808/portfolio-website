@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import { formatDateRange } from '../lib/dates';
 import { employmentTypeLabels, type Experience } from '../lib/experience';
+import NewTabLink from './NewTabLink.astro';
 import TechTags from './TechTags.astro';
 import TimelineEntry from './TimelineEntry.astro';
 
@@ -20,9 +21,9 @@ const details = [location, type ? employmentTypeLabels[type] : undefined].filter
 <TimelineEntry title={role} dates={formatDateRange(startDate, endDate)}>
   <p class="mt-1 text-muted">
     {url ? (
-      <a href={url} class="underline underline-offset-4 hover:text-accent">
+      <NewTabLink href={url} class="underline underline-offset-4 hover:text-accent">
         {organization}
-      </a>
+      </NewTabLink>
     ) : (
       organization
     )}
