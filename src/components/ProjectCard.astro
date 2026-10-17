@@ -10,7 +10,8 @@ const { project } = Astro.props;
 const { title, summary, tech, cover, coverAlt } = project.data;
 ---
 
-<article class="overflow-hidden rounded-lg border border-border transition hover:border-accent hover:shadow-md">
+{/* The ring doubles the hover outline outside the border, so nothing around the card shifts. */}
+<article class="overflow-hidden rounded-lg border border-border transition hover:border-accent hover:shadow-md hover:ring-1 hover:ring-accent">
   <a href={`/projects/${project.id}/`} class="block">
     <Image src={cover} alt={coverAlt} width={600} class="aspect-video w-full object-cover" />
     <div class="p-4">
