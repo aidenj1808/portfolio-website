@@ -1,0 +1,69 @@
+---
+title: 'NHL Data Mining: Power Plays and Goalie Pulls'
+summary: Mined 10 seasons of NHL game data to find what makes power plays and penalty kills succeed, and when a trailing team should pull its goalie.
+category: data
+tech: [R, Python, SQL, caret, rpart, ggplot2]
+startDate: 2025-01
+endDate: 2025-04
+repo: https://github.com/aidenj1808/nhl-data-mining-pp-pk
+cover: ../../assets/projects/nhl-data-mining.svg
+coverAlt: Timeline of the last three minutes of an NHL game, highlighting 2:35 to 1:42 left as the best time to pull the goalie and the final 58 seconds as too late
+---
+
+## Overview
+
+This was my CMPT 496 final project at MacEwan University, which I did with my classmate Mark Said
+under the supervision of Dr. Mohamad El-Hajj. We studied the moments when one team has an extra
+skater and asked two questions:
+
+- What makes a power play or penalty kill succeed?
+- When should a team that's down by a goal pull its goalie to force overtime?
+
+We wrote up the results in a [research paper (PDF)](/papers/nhl-data-mining.pdf).
+
+## The data
+
+We used Kaggle's [NHL Game Data](https://www.kaggle.com/datasets/martinellis/nhl-game-data), a
+relational database of games, shifts, plays, penalties and player stats, plus season-by-season
+player positions from [MoneyPuck](https://moneypuck.com/data.htm). We kept the seasons from 2010
+on, when shift data begins, and focused on 5-on-4 power plays and 6-on-5 goalie pulls by teams
+trailing by one.
+
+The data doesn't say who was on a power play unit, and it doesn't record goalie pulls at all, so I
+rebuilt both from 11.9 million shift records:
+
+- **Power plays and penalty kills:** I matched every player's shifts against two-minute minor
+  penalties to find who was on the ice for each 5-on-4, and used the skater count to tell the power
+  play from the penalty kill. Accounting for overlapping and coincidental penalties left a clean set
+  of 42,581 lineups.
+- **Goalie pulls:** I traced each goalie's third-period shifts to find when they left the ice, then
+  filtered out the exits that weren't desperation pulls: the end of the period, a goalie being
+  replaced, and pulls for a delayed penalty. That left 1,788 pulls, each with the skaters on the ice
+  and whether the game went to overtime.
+
+## Rating players by situation
+
+No single stat says how well someone plays on the power play or penalty kill. Plus-minus comes
+closest, but it measures the team more than the player: everyone on the ice gets credit for a goal,
+whether they touched the puck or not. So we built an effectiveness rating, adapted from Dom
+Luszczyszyn's [Game Score](https://hockey-graphs.com/2016/07/13/measuring-single-game-productivity-an-introduction-to-game-score/):
+
+- Each position has its own formula. Centres get credit for faceoff win percentage, and defencemen
+  leave out plus-minus, which swamped their smaller goal and assist totals.
+- On the power play the formulas reward offence (goals, assists, shots) and subtract giveaways. On
+  the penalty kill, blocks, takeaways and hits take the place of giveaways.
+- The weighted stats are divided by the player's ice time in that situation, and only count games
+  up to the one being rated, so a rating never uses results from the future.
+- Ratings are scaled from 0 to 1 and split into five equal-width levels, Lowest to Highest, to keep
+  the models easy to explain.
+
+## What we found
+
+- **Size matters on special teams.** Clustering penalty kill units with k-means showed heavier
+  groups earning higher effectiveness ratings, and a random forest predicting power play goals
+  ranked player weight as the most important feature by a wide margin, ahead of height. Position,
+  handedness and nationality mattered much less.
+- **Pull the goalie with 2:35 to 1:42 left.** A decision tree trained on the goalie pulls split
+  first on pull time alone: pulls with under 58 seconds left were predicted to end in regulation,
+  with too little time to score. Its later splits point to 2:35 to 1:42 remaining as the window
+  most likely to force overtime.
