@@ -1,0 +1,79 @@
+---
+title: 'Apples to Apples AI: Q-Learning vs. LLMs'
+summary: Built AI players for the party game Apples to Apples, and tested whether a Q-learning agent could learn to beat players built on LLMs and word embeddings.
+category: data
+tech: [Python, spaCy, Sentence Transformers, scikit-learn, Ollama]
+startDate: 2024-05
+endDate: 2024-09
+repo: https://github.com/aidenj1808/apples-to-apples-ai
+cover: ../../assets/projects/apples-to-apples-ai.svg
+coverAlt: Bar chart of games won over 100 games of Apples to Apples. Gemma 2 won 38, Llama 3.1 won 36, SBERT won 14 and our Q-learning agent won 12.
+---
+
+## Overview
+
+This was a summer research project at MacEwan University, which I did with Malcolm Nielsen and
+Darion Kwasnitza under the supervision of Dr. Calin Anton. We built AI players for Apples to
+Apples, a party game with no right answers, and asked whether a player could learn to win it just
+by playing.
+
+Each round, one player is the judge and turns over a green card with an adjective on it, like
+_Absurd_. Everyone else plays a red card from their hand, a noun like _A Bad Haircut_, and the
+judge picks whichever one they like best. Winning means matching the judge's taste, not finding a
+correct answer.
+
+We wrote up the results in a [research paper (PDF)](/papers/apples-to-apples-ai.pdf).
+
+## The players
+
+Each player is its own program. Every round, a driver I wrote sends each player its hand and the
+green card, collects the cards they play, and passes those to the round's judge, which is one of
+the players taking its turn. The decks hold every card from five editions of the game: 750 green
+cards and 2,254 red. I built four of the players:
+
+- **spaCy and SBERT** play the red card closest in meaning to the green card, comparing spaCy's
+  word vectors or SBERT's sentence embeddings, and judge the same way.
+- **Llama 3.1 and Gemma 2**, LLMs with 8 and 9 billion parameters run locally with Ollama, are asked
+  which card is most associated with the green card. They don't always answer with a card exactly
+  as written, so the driver asks again up to five times before falling back to a card that shares
+  a word with the answer.
+
+The LLMs take a few seconds to answer, so I wrote a second driver that asks every player at once.
+That way, a round takes as long as the slowest player instead of all of them in turn.
+
+## The Q-learning agent
+
+The player we wanted to test learns from experience. We built it with Q-learning: it keeps a table
+of how much each play is worth in each situation, or state, and updates it after every round, with
+a reward of +1 for winning the round and −0.5 for losing. The penalty pushes it to try other cards
+instead of repeating ones that haven't won. Its state is the green card plus the seven red cards in
+its hand.
+
+With every card in play, that's far too many states to learn, so I grouped similar cards together:
+
+- I embedded every card with SBERT and clustered the embeddings with k-means, so the agent sees
+  which cluster a card is in instead of the card itself. With 20 clusters, for example, one held
+  actors and movie characters, and another held places.
+- I ran trial games with between 10 and 100 clusters, and the agent earned the most reward with 65.
+
+## What we found
+
+We trained the agent over 400 games against Gemma 2, Llama 3.1 and SBERT, then played 100 more
+games to test it. With four players, the first to win 8 rounds wins the game.
+
+- **Games won:** Gemma 2 won 38, Llama 3.1 won 36, SBERT won 14 and our agent won 12. The two LLMs
+  won 74 games between them without any training on the game.
+- **Rounds won:** Our agent won 423 of the 2,052 rounds, the fewest of the four.
+- **Training:** Its average reward per game levelled off within the first 100 training games and
+  showed no upward trend after that.
+
+## Why it didn't learn
+
+In the paper, we put it down to two things, and the agent's saved table backs up the first:
+
+- **Too many states.** Even with clustering, a state is the green card's cluster plus the clusters
+  of seven red cards, which makes about 86 billion combinations. Every value in the saved table is
+  exactly what a single update gives (0.5 for a win, −0.25 for a loss), so the agent almost never
+  saw a state twice and never got to compare plays from the same one.
+- **Noisy rewards.** The same card from the same hand can win or lose depending on what the other
+  players put down and who's judging, so even a repeated state would give mixed signals.
